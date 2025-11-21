@@ -14,4 +14,14 @@ const imageAnalysisSection = document.getElementById('imageAnalysisSection');
 // Admin credentials
 const ADMIN_CREDENTIALS = {
     username: "admin",
-    password: "admin123" // Change this to a
+    password: "admin123" // Change this to a secure password
+};
+
+// User Login Functionality
+loginBtn.addEventListener('click', () => {
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    // Check for admin credentials
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        loginMessage.textContent = 'Admin login
