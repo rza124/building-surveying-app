@@ -3,53 +3,26 @@ const analyzeBtn = document.getElementById('analyzeBtn');
 const generateReportBtn = document.getElementById('generateReportBtn');
 const resultsDiv = document.getElementById('results');
 const surveyDetails = document.getElementById('surveyDetails');
+const loginBtn = document.getElementById('loginBtn');
+const createUserBtn = document.getElementById('createUserBtn');
+const additionalUserSection = document.getElementById('additionalUserSection');
+const loginMessage = document.getElementById('loginMessage');
+const adminUsername = document.getElementById('adminUsername');
+const adminPassword = document.getElementById('adminPassword');
+const newUsername = document.getElementById('newUsername');
+const newPassword = document.getElementById('newPassword');
 
-analyzeBtn.addEventListener('click', () => {
-    const file = imageInput.files[0];
-    if (!file) {
-        alert('Please select an image to analyze.');
-        return;
-    }
-  
-    const reader = new FileReader();
-    reader.onload = () => {
-        const base64Image = reader.result.split(',')[1]; // Get base64 part
-        analyzeImage(base64Image);
-    };
-    reader.readAsDataURL(file);
-});
+const ADMIN_CREDENTIALS = {
+    username: "admin",
+    password: "admin123" // Change this to a secure password
+};
 
-async function analyzeImage(base64Image) {
-    resultsDiv.innerHTML = 'Analyzing...';
+// Admin Login Functionality
+loginBtn.addEventListener('click', () => {
+    const username = adminUsername.value;
+    const password = adminPassword.value;
     
-    try {
-        const response = await fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC1RaQQIaQaGQCmY-ZvBbb9iYc5uW_4BlE', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                requests: [
-                    {
-                        image: { content: base64Image },
-                        features: [{ type: "LABEL_DETECTION", maxResults: 5 }] // Change feature type as needed
-                    }
-                ]
-            }),
-        });
-
-        const data = await response.json();
-        displayResults(data);
-    } catch (error) {
-        resultsDiv.innerHTML = 'Error analyzing image: ' + error.message;
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        loginMessage.textContent = 'Login successful!';
+        additionalUserSection.style.display = 'block'; // Show user creation section
     }
-}
-
-function displayResults(data) {
-    // Clear previous results
-    resultsDiv.innerHTML = '';
-    
-    // Display analysis results here, customize based on your API response
-    if (data && data.responses && data.responses[0].labelAnnotations) {
-        const results = data.responses[0].labelAnnotations;
-        const resultHtml = results.map(result => `<p>${result.description} (Score: ${result.score.toFixed(2)})</p>`
