@@ -1,75 +1,51 @@
-const imageInput = document.getElementById('imageInput');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const generateReportBtn = document.getElementById('generateReportBtn');
-const resultsDiv = document.getElementById('results');
-const surveyDetails = document.getElementById('surveyDetails');
-
-analyzeBtn.addEventListener('click', () => {
-    const file = imageInput.files[0];
-    if (!file) {
-        alert('Please select an image to analyze.');
-        return;
-    }
-  
-    const reader = new FileReader();
-    reader.onload = () => {
-        const base64Image = reader.result.split(',')[1]; // Get base64 part
-        analyzeImage(base64Image);
-    };
-    reader.readAsDataURL(file);
-});
-
-async function analyzeImage(base64Image) {
-    resultsDiv.innerHTML = 'Analyzing...';
-    
-    try {
-        const response = await fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC1RaQQIaQaGQCmY-ZvBbb9iYc5uW_4BlE', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                requests: [
-                    {
-                        image: { content: base64Image },
-                        features: [{ type: "LABEL_DETECTION", maxResults: 5 }] // Change feature type as needed
-                    }
-                ]
-            }),
-        });
-
-        const data = await response.json();
-        displayResults(data);
-    } catch (error) {
-        resultsDiv.innerHTML = 'Error analyzing image: ' + error.message;
-    }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f0f0f0;
 }
 
-function displayResults(data) {
-    // Clear previous results
-    resultsDiv.innerHTML = '';
-    
-    // Display analysis results here, customize based on your API response
-    if (data && data.responses && data.responses[0].labelAnnotations) {
-        const results = data.responses[0].labelAnnotations;
-        const resultHtml = results.map(result => `<p>${result.description} (Score: ${result.score.toFixed(2)})</p>`).join('');
-        resultsDiv.innerHTML = `<h3>Analysis Results:</h3>${resultHtml}`;
-    } else {
-        resultsDiv.innerHTML = '<h3>No results found.</h3>';
-    }
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-generateReportBtn.addEventListener('click', () => {
-    const details = surveyDetails.value;
-    const reportContent = resultsDiv.innerHTML + '<h3>Survey Details:</h3>' + details;
-    generateReport(reportContent);
-});
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-function generateReport(content) {
-    const newWindow = window.open('', '_blank');
-    newWindow.document.write('<html><head><title>Survey Report</title></head><body>');
-    newWindow.document.write(content);
-    newWindow.document.write('</body></html>');
-    newWindow.document.close();
-    newWindow.print();
+h2 {
+  margin-top: 20px;
+}
+
+input[type="file"], 
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#results {
+  margin-top: 20px;
 }
