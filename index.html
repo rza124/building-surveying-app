@@ -28,16 +28,19 @@
         <button id="createUserBtn">Create User</button>
       </div>
 
-      <h2>Upload Images</h2>
-      <input type="file" id="imageInput" accept="image/*" />
-      <button id="analyzeBtn">Analyze Image</button>
-      
-      <h2>Add Survey Details</h2>
-      <textarea id="surveyDetails" placeholder="Enter your findings here..."></textarea>
-      
-      <button id="generateReportBtn">Generate Report</button>
-      
-      <div id="results"></div>
+      <!-- Image Analysis Section, initially hidden -->
+      <div id="imageAnalysisSection" style="display:none;">
+        <h2>Upload Images</h2>
+        <input type="file" id="imageInput" accept="image/*" />
+        <button id="analyzeBtn">Analyze Image</button>
+        
+        <h2>Add Survey Details</h2>
+        <textarea id="surveyDetails" placeholder="Enter your findings here..."></textarea>
+        
+        <button id="generateReportBtn">Generate Report</button>
+        
+        <div id="results"></div>
+      </div>
     </main>
     
     <footer>
