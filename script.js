@@ -14,7 +14,7 @@ const imageAnalysisSection = document.getElementById('imageAnalysisSection');
 // Admin credentials
 const ADMIN_CREDENTIALS = {
     username: "admin",
-    password: "admin123" // Change this to a secure password
+    password: "admin123!" // Change this to a secure password
 };
 
 // User Login Functionality
