@@ -1,41 +1,75 @@
 const imageInput = document.getElementById('imageInput');
 const analyzeBtn = document.getElementById('analyzeBtn');
+const generateReportBtn = document.getElementById('generateReportBtn');
 const resultsDiv = document.getElementById('results');
+const surveyDetails = document.getElementById('surveyDetails');
 
 analyzeBtn.addEventListener('click', () => {
-  const file = imageInput.files[0];
-  if (!file) {
-    alert('Please select an image to analyze.');
-    return;
-  }
+    const file = imageInput.files[0];
+    if (!file) {
+        alert('Please select an image to analyze.');
+        return;
+    }
   
-  // Read image as base64
-  const reader = new FileReader();
-  reader.onload = () => {
-    const base64Image = reader.result.split(',')[1]; // Remove data URL prefix
-    analyzeImage(base64Image);
-  };
-  reader.readAsDataURL(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+        const base64Image = reader.result.split(',')[1]; // Get base64 part
+        analyzeImage(base64Image);
+    };
+    reader.readAsDataURL(file);
 });
 
-function analyzeImage(base64Image) {
-  // Call to AI API (example placeholder)
-  resultsDiv.innerHTML = 'Analyzing...';
-  
-  // Replace this URL with your actual API endpoint
-  fetch('https://example.com/api/analyze', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ image: base64Image }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    resultsDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
-  })
-  .catch(error => {
-    resultsDiv.innerHTML = 'Error analyzing image.';
-    console.error(error);
-  });
+async function analyzeImage(base64Image) {
+    resultsDiv.innerHTML = 'Analyzing...';
+    
+    try {
+        const response = await fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC1RaQQIaQaGQCmY-ZvBbb9iYc5uW_4BlE', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                requests: [
+                    {
+                        image: { content: base64Image },
+                        features: [{ type: "LABEL_DETECTION", maxResults: 5 }] // Change feature type as needed
+                    }
+                ]
+            }),
+        });
+
+        const data = await response.json();
+        displayResults(data);
+    } catch (error) {
+        resultsDiv.innerHTML = 'Error analyzing image: ' + error.message;
+    }
+}
+
+function displayResults(data) {
+    // Clear previous results
+    resultsDiv.innerHTML = '';
+    
+    // Display analysis results here, customize based on your API response
+    if (data && data.responses && data.responses[0].labelAnnotations) {
+        const results = data.responses[0].labelAnnotations;
+        const resultHtml = results.map(result => `<p>${result.description} (Score: ${result.score.toFixed(2)})</p>`).join('');
+        resultsDiv.innerHTML = `<h3>Analysis Results:</h3>${resultHtml}`;
+    } else {
+        resultsDiv.innerHTML = '<h3>No results found.</h3>';
+    }
+}
+
+generateReportBtn.addEventListener('click', () => {
+    const details = surveyDetails.value;
+    const reportContent = resultsDiv.innerHTML + '<h3>Survey Details:</h3>' + details;
+    generateReport(reportContent);
+});
+
+function generateReport(content) {
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write('<html><head><title>Survey Report</title></head><body>');
+    newWindow.document.write(content);
+    newWindow.document.write('</body></html>');
+    newWindow.document.close();
+    newWindow.print();
 }
