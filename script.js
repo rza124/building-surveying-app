@@ -9,6 +9,7 @@ const additionalUserSection = document.getElementById('additionalUserSection');
 const loginMessage = document.getElementById('loginMessage');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
+const imageAnalysisSection = document.getElementById('imageAnalysisSection');
 
 // Admin credentials
 const ADMIN_CREDENTIALS = {
@@ -21,8 +22,4 @@ loginBtn.addEventListener('click', () => {
     const username = usernameInput.value;
     const password = passwordInput.value;
     
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        loginMessage.textContent = 'Admin login successful!';
-        additionalUserSection.style.display = 'block'; // Show user creation section
-    } else {
-        // Check if user exists in local storage
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIAL
