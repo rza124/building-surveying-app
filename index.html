@@ -13,6 +13,20 @@
     </header>
     
     <main>
+      <h2>Admin Login</h2>
+      <input type="text" id="adminUsername" placeholder="Username" />
+      <input type="password" id="adminPassword" placeholder="Password" />
+      <button id="loginBtn">Login</button>
+      
+      <div id="loginMessage"></div>
+      
+      <div id="additionalUserSection" style="display:none;">
+        <h2>Create Additional User</h2>
+        <input type="text" id="newUsername" placeholder="New Username" />
+        <input type="password" id="newPassword" placeholder="New Password" />
+        <button id="createUserBtn">Create User</button>
+      </div>
+
       <h2>Upload Images</h2>
       <input type="file" id="imageInput" accept="image/*" />
       <button id="analyzeBtn">Analyze Image</button>
